@@ -1,4 +1,4 @@
-package kawaiilogger
+package logger
 
 import (
 	"fmt"
@@ -11,15 +11,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type IKawaiiLogger interface {
-	Print() IKawaiiLogger
+type ILgrowLogger interface {
+	Print() ILgrowLogger
 	Save()
 	SetQuery(c *fiber.Ctx)
 	SetBody(c *fiber.Ctx)
 	SetResponse(res any)
 }
 
-type kawaiiLogger struct {
+type lgrowLogger struct {
 	Time       string `json:"time"`
 	Ip         string `json:"ip"`
 	Method     string `json:"method"`
@@ -30,8 +30,8 @@ type kawaiiLogger struct {
 	Response   any    `json:"response"`
 }
 
-func InitKawaiiLogger(c *fiber.Ctx, res any, code int) IKawaiiLogger {
-	log := &kawaiiLogger{
+func InitLgrowLogger(c *fiber.Ctx, res any, code int) ILgrowLogger {
+	log := &lgrowLogger{
 		Time:       time.Now().Local().Format("2006-01-02 15:04:05"),
 		Ip:         c.IP(),
 		Method:     c.Method(),
@@ -44,15 +44,15 @@ func InitKawaiiLogger(c *fiber.Ctx, res any, code int) IKawaiiLogger {
 	return log
 }
 
-func (l *kawaiiLogger) Print() IKawaiiLogger {
+func (l *lgrowLogger) Print() ILgrowLogger {
 	utils.Debug(l)
 	return l
 }
 
-func (l *kawaiiLogger) Save() {
+func (l *lgrowLogger) Save() {
 	data := utils.Output(l)
 
-	filename := fmt.Sprintf("./assets/logs/kawaiilogger_%v.txt", strings.ReplaceAll(time.Now().Format("2006-01-02"), "-", ""))
+	filename := fmt.Sprintf("./assets/logs/lgrowlogger_%v.txt", strings.ReplaceAll(time.Now().Format("2006-01-02"), "-", ""))
 	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
@@ -61,7 +61,7 @@ func (l *kawaiiLogger) Save() {
 	file.WriteString(string(data) + "\n")
 }
 
-func (l *kawaiiLogger) SetQuery(c *fiber.Ctx) {
+func (l *lgrowLogger) SetQuery(c *fiber.Ctx) {
 	var body any
 	if err := c.QueryParser(&body); err != nil {
 		log.Printf("query parser error: %v", err)
@@ -69,7 +69,7 @@ func (l *kawaiiLogger) SetQuery(c *fiber.Ctx) {
 	l.Query = body
 }
 
-func (l *kawaiiLogger) SetBody(c *fiber.Ctx) {
+func (l *lgrowLogger) SetBody(c *fiber.Ctx) {
 	var body any
 	if err := c.BodyParser(&body); err != nil {
 		log.Printf("body parser error: %v", err)
@@ -83,6 +83,6 @@ func (l *kawaiiLogger) SetBody(c *fiber.Ctx) {
 	}
 }
 
-func (l *kawaiiLogger) SetResponse(res any) {
+func (l *lgrowLogger) SetResponse(res any) {
 	l.Response = res
 }

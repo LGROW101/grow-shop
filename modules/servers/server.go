@@ -13,7 +13,9 @@ import (
 
 type IServer interface {
 	Start()
+	GetServer() *server
 }
+
 type server struct {
 	app *fiber.App
 	cfg config.IConfig
@@ -35,21 +37,27 @@ func NewServer(cfg config.IConfig, db *sqlx.DB) IServer {
 	}
 }
 
+func (s *server) GetServer() *server {
+	return s
+}
+
 func (s *server) Start() {
-	// middlewares
+	// Middlewares
 	middlewares := InitMiddlewares(s)
 	s.app.Use(middlewares.Logger())
 	s.app.Use(middlewares.Cors())
+	// s.app.Use(middlewares.StreamingFile())
 
-	// Modeles
-
+	// Modules
 	v1 := s.app.Group("v1")
 
 	modules := InitModule(v1, s, middlewares)
 
 	modules.MonitorModule()
+	modules.UsersModule()
 
 	s.app.Use(middlewares.RouterCheck())
+
 	// Graceful Shutdown
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)

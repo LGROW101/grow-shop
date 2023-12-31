@@ -1,4 +1,4 @@
-package monitorHandler
+package monitorHandlers
 
 import (
 	"github.com/LGROW101/lgrow-shop/config"

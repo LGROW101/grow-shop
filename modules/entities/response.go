@@ -1,7 +1,7 @@
 package entities
 
 import (
-	"github.com/LGROW101/lgrow-shop/pkg/kawaiilogger"
+	"github.com/LGROW101/lgrow-shop/pkg/logger"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -30,7 +30,7 @@ func NewResponse(c *fiber.Ctx) IResponse {
 func (r *Response) Success(code int, data any) IResponse {
 	r.StatuCode = code
 	r.Data = data
-	kawaiilogger.InitKawaiiLogger(r.Context, r.Data, r.StatuCode).Print().Save()
+	logger.InitLgrowLogger(r.Context, r.Data, r.StatuCode).Print().Save()
 	return r
 }
 
@@ -41,7 +41,7 @@ func (r *Response) Error(code int, tractId, msg string) IResponse {
 		Msg:     msg,
 	}
 	r.IsError = true
-	kawaiilogger.InitKawaiiLogger(r.Context, r.ErrorRes, r.StatuCode).Print().Save()
+	logger.InitLgrowLogger(r.Context, r.ErrorRes, r.StatuCode).Print().Save()
 	return r
 }
 func (r *Response) Res() error {
