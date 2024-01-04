@@ -30,7 +30,7 @@ func NewResponse(c *fiber.Ctx) IResponse {
 func (r *Response) Success(code int, data any) IResponse {
 	r.StatuCode = code
 	r.Data = data
-	logger.InitLgrowLogger(r.Context, r.Data, r.StatuCode).Print().Save()
+	logger.InitLgrowLogger(r.Context, r.Data, r.StatuCode).Print()
 	return r
 }
 
@@ -51,4 +51,12 @@ func (r *Response) Res() error {
 		}
 		return &r.Data
 	}())
+}
+
+type PaginateRes struct {
+	Data      any `json:"data"`
+	Page      int `json:"page"`
+	Limit     int `json:"limit"`
+	TotalPage int `json:"total_page"`
+	TotalItem int `json:"total_item"`
 }
